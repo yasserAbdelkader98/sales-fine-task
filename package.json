@@ -1,0 +1,31 @@
+{
+  "name": "sales-fine",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "jest --runInBand",
+    "test:integration": "jest --config jest.integration.config.js --runInBand",
+    "db:migrate": "knex migrate:latest --env development",
+    "db:rollback": "knex migrate:rollback --env development",
+    "db:status": "knex migrate:status --env development",
+    "db:seed": "knex seed:run --env development"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0",
+    "ioredis": "^5.11.1",
+    "knex": "^3.3.0",
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "jest": "^30.5.2",
+    "supertest": "^7.3.1"
+  }
+}

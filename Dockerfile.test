@@ -1,0 +1,14 @@
+FROM node:24-bookworm-slim
+
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci && npm cache clean --force
+
+COPY src ./src
+COPY db ./db
+COPY knexfile.js jest.integration.config.js ./
+COPY tests/integration ./tests/integration
+
+ENV NODE_ENV=test
+USER node
+CMD ["npm", "run", "test:integration"]

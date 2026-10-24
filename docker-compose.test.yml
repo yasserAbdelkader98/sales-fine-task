@@ -1,0 +1,52 @@
+# Disposable test services: no host ports, development URLs, or persistent volumes.
+name: sales-fine-tests
+
+services:
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    init: true
+    environment:
+      NODE_ENV: test
+      INTEGRATION_TESTS: "1"
+      DATABASE_URL: postgresql://test_user@test-db:5432/sales_fine_test
+      REDIS_URL: redis://test-redis:6379/0
+    depends_on:
+      test-db:
+        condition: service_healthy
+      test-redis:
+        condition: service_healthy
+    networks: [test-network]
+
+  test-db:
+    image: postgres:17-bookworm
+    environment:
+      POSTGRES_USER: test_user
+      POSTGRES_DB: sales_fine_test
+      # Trust is only for this isolated, disposable test network.
+      POSTGRES_HOST_AUTH_METHOD: trust
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "127.0.0.1", "-U", "test_user", "-d", "sales_fine_test"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+    networks: [test-network]
+
+  test-redis:
+    image: redis:7.4-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    tmpfs:
+      - /data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+    networks: [test-network]
+
+networks:
+  test-network:
+    internal: true

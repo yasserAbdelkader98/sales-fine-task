@@ -1,0 +1,17 @@
+# Dependencies are installed inside the image
+node_modules
+**/node_modules
+
+# Local environment files and credentials
+.env
+.env.*
+**/.env
+**/.env.*
+.npmrc
+**/.npmrc
+
+# Git metadata and logs
+.git
+**/.git
+*.log
+**/*.log
